@@ -1,0 +1,84 @@
+INFO:     Started server process [3244]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://192.168.0.101:8000 (Press CTRL+C to quit)
+Arguments:
+key_fname: key.pem
+cert_fname: cert.pem
+host: 127.0.0.1
+port: 8000
+secure: False
+master: True
+master_host: 0.0.0.0
+master_port: 80
+user: 
+pwd: 
+
+┓┏      ┏┓  • ┓┏┓(6.0.22 Alpha) 
+┃┃┏┓┏┓┏┓┃┓┏┓┓┏┫┗┓┏┓┏┓┓┏┏┓┏┓
+┗┛┗ ┛ ┗┻┗┛┛ ┗┗┻┗┛┗ ┛ ┗┛┗ ┛ 
+192.168.0.101:8000  
+    
+I am the master service
+INFO:     192.168.0.101:10838 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.0.101:10839 - "GET /docs HTTP/1.1" 200 OK
+INFO:     192.168.0.101:9615 - "GET / HTTP/1.1" 200 OK
+INFO:     192.168.0.101:9615 - "GET /favicon.ico HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\responses.py", line 350, in __call__
+    stat_result = await anyio.to_thread.run_sync(os.stat, self.path)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\code\research\gridcal-env\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\code\research\gridcal-env\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\code\research\gridcal-env\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。: 'C:\\code\\research\\gridcal-env\\Lib\\site-packages\\VeraGridServer\\data\\VeraGrid_icon.ico'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\code\research\gridcal-env\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\code\research\gridcal-env\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\code\research\gridcal-env\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\code\research\gridcal-env\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\code\research\gridcal-env\Lib\site-packages\fastapi\routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "C:\code\research\gridcal-env\Lib\site-packages\starlette\responses.py", line 353, in __call__
+    raise RuntimeError(f"File at path {self.path} does not exist.")
+RuntimeError: File at path C:\code\research\gridcal-env\Lib\site-packages\VeraGridServer\data\VeraGrid_icon.ico does not exist.

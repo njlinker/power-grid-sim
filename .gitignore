@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+*.egg-info/
+
+# 虚拟环境
+gridcal-env/
+coderesearchgridcal-env/
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Windows 残留
+nul
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 实验输出（可重新生成，但保留也无妨；按需放开）
+# lab_scripts/exp08_dashboard.html

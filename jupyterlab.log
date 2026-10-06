@@ -1,0 +1,44 @@
+[I 2026-05-30 21:53:38.791 ServerApp] jupyter_lsp | extension was successfully linked.
+[I 2026-05-30 21:53:38.811 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2026-05-30 21:53:38.834 ServerApp] jupyterlab | extension was successfully linked.
+[I 2026-05-30 21:53:38.842 ServerApp] Writing Jupyter server cookie secret to C:\Users\liuka\AppData\Roaming\jupyter\runtime\jupyter_cookie_secret
+[I 2026-05-30 21:53:40.213 ServerApp] notebook_shim | extension was successfully linked.
+[I 2026-05-30 21:53:40.418 ServerApp] notebook_shim | extension was successfully loaded.
+[I 2026-05-30 21:53:40.424 ServerApp] jupyter_lsp | extension was successfully loaded.
+[I 2026-05-30 21:53:40.426 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2026-05-30 21:53:40.436 LabApp] JupyterLab extension loaded from C:\code\research\gridcal-env\Lib\site-packages\jupyterlab
+[I 2026-05-30 21:53:40.436 LabApp] JupyterLab application directory is C:\code\research\gridcal-env\share\jupyter\lab
+[I 2026-05-30 21:53:40.440 LabApp] Extension Manager is 'pypi'.
+[I 2026-05-30 21:53:41.802 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2026-05-30 21:53:41.804 ServerApp] Serving notebooks from local directory: C:\code\research
+[I 2026-05-30 21:53:41.804 ServerApp] Jupyter Server 2.19.0 is running at:
+[I 2026-05-30 21:53:41.804 ServerApp] http://127.0.0.1:8888/lab?token=7a2884edee53460ec4c3966023db4ff337c1d6085dda8b04
+[I 2026-05-30 21:53:41.804 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2026-05-30 21:53:41.822 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///C:/Users/liuka/AppData/Roaming/jupyter/runtime/jpserver-15740-open.html
+    Or copy and paste one of these URLs:
+        http://127.0.0.1:8888/lab?token=7a2884edee53460ec4c3966023db4ff337c1d6085dda8b04
+[I 2026-05-30 21:53:43.421 ServerApp] Skipped non-installed server(s): basedpyright, bash-language-server, dockerfile-language-server-nodejs, javascript-typescript-langserver, jedi-language-server, julia-language-server, pyrefly, pyright, python-language-server, python-lsp-server, r-languageserver, sql-language-server, texlab, typescript-language-server, unified-language-server, vscode-css-languageserver-bin, vscode-html-languageserver-bin, vscode-json-languageserver-bin, yaml-language-server
+[I 2026-05-30 21:56:47.827 LabApp] Build is up to date
+[I 2026-05-30 21:56:59.208 ServerApp] Creating new notebook in 
+[I 2026-05-30 21:56:59.323 ServerApp] Writing notebook-signing key to C:\Users\liuka\AppData\Roaming\jupyter\notebook_secret
+[I 2026-05-30 21:57:00.084 ServerApp] Kernel started: 38352dc6-0636-4b4b-ab17-eac223bae210
+[I 2026-05-30 21:57:01.829 ServerApp] Adapting from protocol version 5.3 (kernel 38352dc6-0636-4b4b-ab17-eac223bae210) to 5.4 (client).
+[I 2026-05-30 21:57:01.831 ServerApp] Connecting to kernel 38352dc6-0636-4b4b-ab17-eac223bae210.
+[W 2026-05-30 21:57:01.861 ServerApp] The websocket_ping_timeout (90000) cannot be longer than the websocket_ping_interval (30000).
+    Setting websocket_ping_timeout=30000
+[I 2026-05-30 21:57:01.865 ServerApp] Adapting from protocol version 5.3 (kernel 38352dc6-0636-4b4b-ab17-eac223bae210) to 5.4 (client).
+[I 2026-05-30 21:57:01.866 ServerApp] Connecting to kernel 38352dc6-0636-4b4b-ab17-eac223bae210.
+[I 2026-05-30 21:57:01.896 ServerApp] Adapting from protocol version 5.3 (kernel 38352dc6-0636-4b4b-ab17-eac223bae210) to 5.4 (client).
+[I 2026-05-30 21:57:01.899 ServerApp] Connecting to kernel 38352dc6-0636-4b4b-ab17-eac223bae210.
+[W 2026-05-30 21:57:01.947 ServerApp] Got events for closed stream <zmq.eventloop.zmqstream.ZMQStream object at 0x0000021C4A8EF590>
+[I 2026-05-30 21:57:09.159 ServerApp] Starting buffering for 38352dc6-0636-4b4b-ab17-eac223bae210:cf71ce31-5b9a-4184-a376-299c1d4bf5b4
+C:\code\research\gridcal-env\Lib\site-packages\nbformat\__init__.py:96: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.
+  validate(nb)
+[W 2026-05-30 21:57:17.038 ServerApp] Notebook veragrid_jupyter_demo.ipynb is not trusted
+[I 2026-05-30 21:57:17.236 ServerApp] Kernel started: e4db46b7-fbfb-4309-827e-a5bddf7368e9
+[I 2026-05-30 21:57:18.596 ServerApp] Adapting from protocol version 5.3 (kernel e4db46b7-fbfb-4309-827e-a5bddf7368e9) to 5.4 (client).
+[I 2026-05-30 21:57:18.598 ServerApp] Connecting to kernel e4db46b7-fbfb-4309-827e-a5bddf7368e9.
+[I 2026-05-30 21:57:24.378 ServerApp] Starting buffering for e4db46b7-fbfb-4309-827e-a5bddf7368e9:1a83fbe9-7db9-4065-8e92-d678dfe88efb
