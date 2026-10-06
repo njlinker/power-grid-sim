@@ -1,0 +1,63 @@
+# 电网保护规则配置文件
+# 修改规则只需改这个文件，无需改动 Python 代码
+# 每个字段含义：
+#   id          规则唯一标识，写入日志
+#   description 人类可读描述
+#   family      UVLS / OVGR / OVERLOAD / RECONF 四种之一
+#   threshold   触发阈值（UVLS/OVGR: 电压 pu; OVERLOAD: 载流 %; RECONF: 失电阈值 pu）
+#   target      动作目标（"*": 最差母线；或具体母线名/开关名）
+#   action_param 动作强度（切负荷比例 0-1 / 降出力比例 0-1；RECONF 无意义可填 0）
+#   cooldown_s  两次触发最小间隔（秒）
+#   enabled     是否启用（false=跳过）
+
+rules:
+
+  # ============ 低压减载（Under-Voltage Load Shedding）============
+  - id: R001_UVLS
+    description: 严重低电压时切最差母线 30% 负荷
+    family: UVLS
+    threshold: 0.93
+    target: "*"
+    action_param: 0.30
+    cooldown_s: 5.0
+    enabled: true
+
+  # 备用规则（更激进的切负荷，注释可启用）
+  # - id: R001b_UVLS_AGGRESSIVE
+  #   description: 严重低电压时切 50% 负荷
+  #   family: UVLS
+  #   threshold: 0.90
+  #   target: "*"
+  #   action_param: 0.50
+  #   cooldown_s: 5.0
+  #   enabled: false
+
+  # ============ 过压减出力（Over-Voltage Gen Reduction）============
+  - id: R002_OVGR
+    description: 过电压时降低出力 20%
+    family: OVGR
+    threshold: 1.10
+    target: "*"
+    action_param: 0.20
+    cooldown_s: 5.0
+    enabled: true
+
+  # ============ 重载切负荷（Overload Load Shedding）============
+  - id: R003_OVERLOAD
+    description: 线路载流超 130% 时切末端 10% 负荷
+    family: OVERLOAD
+    threshold: 130.0
+    target: "*"
+    action_param: 0.10
+    cooldown_s: 5.0
+    enabled: true
+
+  # ============ 自动重构（Reconfiguration）============
+  - id: R004_RECONF
+    description: 检测到失电母线自动闭合 TIE 联络开关
+    family: RECONF
+    threshold: 0.05
+    target: TIE
+    action_param: 0.0
+    cooldown_s: 1.0
+    enabled: true
