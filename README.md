@@ -1,105 +1,244 @@
-# 电网事件驱动仿真与自动投切决策系统
+# PowerGridSim
 
-> 一个基于 VeraGrid 的事件驱动电网仿真平台，覆盖从仿真引擎到规则引擎到可视化的完整闭环。
->
-> **状态**：全部 6 个 Phase 完成 ✅  
-> **作者**：liuka  
-> **起始**：2026-10-06
+> ⚡ Event-driven power grid simulation with auto-switching decision system.
+> 电网事件驱动仿真与自动投切决策系统。
 
-## 项目目标
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![JOSS](https://img.shields.io/badge/JOSS-submission-blue)](https://joss.theoj.org/)
 
-构建一个**事件驱动的电网仿真平台**，用于研究真实电网在动态扰动下的运行行为，并支撑自动投切策略的离线生成与在线验证。
+---
 
-1. **稳态运行**：模拟真实电网拓扑 + 负荷/电源时序
-2. **动态扰动**：负荷新增/退出、发电机跳机、线路故障等事件注入
-3. **自动投切**：根据电网状态自动生成开关/切负荷/调出力等动作
-4. **实时观测**：拓扑、节点电压、支路载流、发电机出力、损耗等状态时间序列
-5. **规则生成**：从大量仿真数据中归纳出保护/重构规则
+## What is PowerGridSim?
 
-## 项目结构
+PowerGridSim is an **event-driven power grid simulation platform** built on [VeraGrid](https://github.com/SanPen-Alcon/VeraGrid). It enables researchers and engineers to:
 
-```
-.
-├── docs/
-│   └── DESIGN.md                      ← 完整设计文档（370+ 行）
-├── lab_scripts/                       ← 仿真核心 + 8 个实验 demo
-│   ├── event_sim.py                   ← Phase 1: 事件注入器 + 仿真器
-│   ├── radial_feeder.py               ← Phase 2: 5-bus 辐射状配电 feeder
-│   ├── rule_engine.py                 ← Phase 3: 4 条保护规则 + 引擎
-│   ├── load_profiles.py               ← Phase B: ZIP/闪变/启停模型
-│   ├── rule_generator.py              ← Phase 4: 候选枚举 + 评分搜索
-│   ├── dashboard.py                   ← Phase 5: Plotly 仪表盘构建器
-│   ├── exp01_power_flow_ieee14.py     ← 实验一：基础潮流
-│   ├── exp02_short_circuit_ieee14.py  ← 实验二：短路电流
-│   ├── exp03_event_driven_sim.py      ← 实验三：事件注入验证
-│   ├── exp04_rule_engine.py           ← 实验四：规则引擎 v1
-│   ├── exp05_reconfigure.py           ← 实验五：配电自动重构
-│   ├── exp06_realistic_loads.py       ← 实验六：真实负荷扰动
-│   ├── exp07_rule_generation.py       ← 实验七：规则生成
-│   ├── exp08_dashboard.py             ← 实验八：实时仪表盘
-│   ├── exp07_results*.csv             ← 规则评分结果
-│   ├── exp0X_*.png                    ← 各实验可视化
-│   └── exp08_dashboard.html           ← 单文件交互式仪表盘
-├── Grids_and_profiles/grids/          ← IEEE / Kundur 测试系统
-├── gridcal_install.log                ← VeraGrid 安装日志
-├── veragrid_install.log
-├── veragrid_test.py
-├── veragrid_jupyter_demo.ipynb        ← 早期 demo notebook
-├── start-*.cmd                        ← 启动脚本
-└── .gitignore
-```
+1. **Simulate grid disturbances** — load changes, generator trips, line faults
+2. **Auto-generate protection rules** — discover optimal IF-THEN policies via simulation
+3. **Visualize state evolution** — interactive Plotly and Dash dashboards
+4. **Evaluate probabilistic behavior** — Monte Carlo under load uncertainty
 
-## 6 个 Phase 速览
+The framework integrates topology analysis, rule engines, reinforcement learning, and statistical evaluation in a single Python package.
 
-| Phase | 主题 | 关键产出 |
-|---|---|---|
-| **1** | 事件驱动仿真 | `event_sim.py` + exp03 — IEEE 14 注入 5 个事件，91 步全收敛 |
-| **2** | 拓扑可控建模 | `radial_feeder.py` + exp05 — F1B 失电从 25 步降到 1 步（R004 自动重构） |
-| **3** | 规则引擎 v1 | `rule_engine.py` + exp04 — 4 条规则改善系统指标（最低电压 +0.010 pu，最大载流 -15%） |
-| **B** | 真实负荷扰动 | `load_profiles.py` + exp06 — ZIP 折算 + 闪变 + 启停概率模型 |
-| **4** | 规则生成 | `rule_generator.py` + exp07 — 枚举 ~30 条候选规则 + 双场景评分对比 |
-| **5** | 实时可视化 | `dashboard.py` + exp08 — 单文件 HTML 仪表盘（拓扑动画 + 时序曲线 + 指标卡片） |
+## Statement of Need
 
-详细设计、踩坑记录、验证结果见 [`docs/DESIGN.md`](docs/DESIGN.md)。
+Existing power system simulators (PSS/E, DIgSILENT, GridCal) excel at steady-state and dynamic analysis but typically do **not** provide:
 
-## 快速开始
+- A unified Python API for **event injection** (load add/drop, gen trip, line trip)
+- Built-in **rule engines** for protection/reconfiguration with cooldown
+- **Topology-aware auto-reconfiguration** with fault isolation
+- **Probabilistic power flow** integrated with the same simulator
+- **Interactive web dashboards** for live visualization
+
+PowerGridSim fills this gap with an end-to-end Python workflow designed for **distribution automation research**.
+
+## Installation
+
+### From source (current)
 
 ```bash
-# 激活环境
-gridcal-env\Scripts\activate
+git clone https://github.com/<your-name>/power-grid-sim.git
+cd power-grid-sim
 
-# 运行单个实验
-python lab_scripts/exp03_event_driven_sim.py
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+# venv\Scripts\activate    # Windows
 
-# 生成最新仪表盘
-python lab_scripts/exp08_dashboard.py
-# 浏览器打开 lab_scripts/exp08_dashboard.html
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests
+pytest
 ```
 
-## 关键技术决策
+### Dependencies
 
-- **VeraGrid 作仿真后端**（潮流/动态/短路），自定义事件+规则层
-- **Line + active 标志**而非 Switch 类（带阻抗 + 可投切，更灵活）
-- **规则冷却机制**防止低电压 → 切负荷 → 电压恢复 → 又触发的循环
-- **Simulator 规则触发后立即 re-PF**（零延迟优化，消除 1 步 blackout）
-- **Plotly 单文件 HTML**仪表盘（CDN 引入，无服务器）
+Core:
+- [VeraGrid](https://pypi.org/project/VeraGrid/) >= 6.0 — power flow solver
+- numpy, pandas — data manipulation
+- pyyaml — rule configuration files
 
-## 已修过的坑（API 踩坑记录）
+Visualization (optional):
+- matplotlib — static plots
+- plotly — interactive HTML dashboards
 
-- `pf.Sbus` / `pf.Sf` 是 **MW**（不是 pu，尽管名字像 pu）
-- `pf.loading` 字段对未通流支路返回垃圾值（1.58e16%）
-- VeraGrid 默认 `ln.rate = 1.0`（基本无意义），必须显式设置
-- `Bus.is_slack` 属性存在（不是 `is_reference`）
-- Windows GBK 终端不支持 ✓ ✗ 等 unicode
-- `load_counter` 全局变量跨场景需要重置
+Advanced features (optional):
+- stable-baselines3, gymnasium — reinforcement learning (Phase D)
+- dash — real-time live dashboard (Phase F)
 
-## 后续可扩展方向
+## Quick Start
 
-- 真·实时仪表盘（Dash + WebSocket）
-- 规则库 YAML/JSON 化（脱离代码硬编码）
-- 拓扑坐标自动推断（不再硬编码 IEEE 14）
-- R004 加故障隔离逻辑（先打开分段开关再合 TIE）
-- tie_map 自动拓扑识别
-- 与 SCADA 真实数据接入
-- 概率潮流 (PPF) / 蒙特卡洛场景库
-- RL 智能体在仿真环境训练
+```python
+from event_sim import Simulator, make_schedule
+from rules_loader import load_engine_from_yaml
+import VeraGridEngine as vg
+
+# Load a grid
+grid = vg.open_file("Grids_and_profiles/grids/IEEE 14 bus.raw")
+
+# Define an event schedule
+schedule = make_schedule(
+    (10.0, "load_add", "BUS 14", 50.0),   # +50MW at bus 14 at t=10s
+    (40.0, "gen_trip", "2_1"),            # Generator 2 trips at t=40s
+)
+
+# Load rules from YAML
+engine = load_engine_from_yaml("lab_scripts/config/rules.yaml")
+
+# Run simulation
+sim = Simulator(grid, dt=1.0)
+df = sim.run(duration=90.0, schedule=schedule, rules=engine)
+
+# Inspect results
+print(df[['t', 'v_BUS 14', 'line_1_2_1', 'loss_mw']].tail())
+```
+
+## Repository Structure
+
+```
+power-grid-sim/
+├── docs/
+│   └── DESIGN.md              # Detailed design doc (370+ lines)
+├── lab_scripts/
+│   ├── event_sim.py           # Event injection + simulator
+│   ├── rule_engine.py         # Rule + RuleEngine + 4 default rules
+│   ├── radial_feeder.py       # 5-bus radial feeder test system
+│   ├── load_profiles.py       # ZIP model + flicker + switching
+│   ├── rule_generator.py      # Candidate enumeration + scoring
+│   ├── topology_analyzer.py   # Topology analysis (tie_map, etc.)
+│   ├── rules_loader.py        # YAML rule configuration
+│   ├── scenarios.py           # Test scenario library
+│   ├── dashboard.py           # Plotly dashboard builder
+│   ├── rl_env.py              # Gymnasium RL environment
+│   ├── config/
+│   │   └── rules.yaml         # Default rule configuration
+│   └── exp01...exp14*.py      # 14 demo scripts
+├── tests/                     # pytest test suite (64 tests)
+├── Grids_and_profiles/        # IEEE / Kundur test systems
+├── paper.md                   # JOSS submission paper
+├── docs/DESIGN.md             # Full design documentation
+├── LICENSE                    # MIT License
+├── CITATION.cff               # Citation metadata
+├── pytest.ini                 # pytest configuration
+└── README.md                  # This file
+```
+
+## Core Capabilities
+
+| Phase | Feature | Key Metric |
+|---|---|---|
+| **1. Event-Driven Sim** | 6 event types, snapshot/state | 91/91 steps converged |
+| **2. Topology Control** | 5-bus radial feeder, switch modeling | F1B blackout 25→1 step |
+| **3. Rule Engine** | 4 default rules (UVLS/OVGR/OVL/RECONF) | min_v +0.010 pu, load −15% |
+| **B. Real Loads** | ZIP + flicker + switching prob | 11 profiles, 201/201 converged |
+| **4. Rule Generation** | Enumerate + simulate + score | 30+ candidates ranked |
+| **5. Visualization** | Plotly HTML + Dash live | 264 KB single-file dashboard |
+| **A. YAML Config** | Rules without code changes | 4 rules from rules.yaml |
+| **C. R004 v2** | Auto tie_map + fault isolation | S13 isolation verified |
+| **D. RL Agent** | PPO in Gymnasium env | Framework + trained model |
+| **E. Probabilistic PF** | Monte Carlo with N(0,σ) load noise | 200 runs, 79.5% overload prob |
+| **F. Real-Time Dash** | Dash + interval callback | 1-second auto-refresh |
+
+## Running the Demos
+
+```bash
+cd lab_scripts
+
+# Phase 1: event-driven simulation
+python exp03_event_driven_sim.py
+
+# Phase 2: reconfiguration
+python exp05_reconfigure.py
+
+# Phase 3: rule engine comparison
+python exp04_rule_engine.py
+
+# Phase 4: rule generation
+python exp07_rule_generation.py
+
+# Phase 5: Plotly dashboard (single HTML)
+python exp08_dashboard.py
+# Open lab_scripts/exp08_dashboard.html in browser
+
+# Phase 6: live Dash server
+python exp14_dash_live.py
+# Open http://127.0.0.1:8050
+
+# Benchmarks
+python exp10_benchmark.py    # 7 scenarios with pass/fail
+
+# Probability flow
+python exp13_ppf.py          # Monte Carlo with 200 runs
+```
+
+## Testing
+
+```bash
+pytest                    # Run all 64 tests
+pytest -v                 # Verbose
+pytest tests/test_event_sim.py   # Single module
+pytest --tb=long           # Full traceback on failure
+```
+
+Test coverage includes:
+- Event injection and Simulator loop
+- Rule engine + cooldown logic
+- Topology analysis (tie_map, fault isolation)
+- Load profiles (ZIP, flicker, switching)
+- YAML rule loading
+- Rule generation and scoring
+
+## Documentation
+
+- **[docs/DESIGN.md](docs/DESIGN.md)** — 370+ line design document with API quirks, decision rationale, validation results
+- **Lab scripts** — each script is heavily commented; see `exp03`, `exp05`, `exp07` as entry points
+- **Docstrings** — every public function has type hints and docstrings
+
+## Contributing
+
+Contributions are welcome. Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Add tests for new functionality
+4. Ensure `pytest` passes
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+
+## Citation
+
+If you use PowerGridSim in research, please cite:
+
+```bibtex
+@software{powergridsim2026,
+  author = {liu, ka},
+  title = {PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System},
+  year = {2026},
+  journal = {Journal of Open Source Software},
+  url = {https://github.com/<your-name>/power-grid-sim}
+}
+```
+
+See [CITATION.cff](CITATION.cff) for machine-readable citation metadata.
+
+## Acknowledgments
+
+- Built on top of [VeraGrid](https://github.com/SanPen-Alcon/VeraGrid) by Santiago Peñate Vera et al.
+- Visualization powered by [Plotly](https://plotly.com/) and [Dash](https://dash.plotly.com/)
+- Reinforcement learning via [Stable-Baselines3](https://stable-baselines3.readthedocs.io/)
+- Test systems from IEEE Power & Energy Society and Kundur
+
+## Related Projects
+
+- [VeraGrid](https://github.com/SanPen-Alcon/VeraGrid) — base power system simulator
+- [GridCal](https://github.com/SanPen-Alcon/GridCal) — predecessor project
+- [PyPSA](https://github.com/PyPSA/PyPSA) — Python for Power Systems Analysis
+- [OpenDSS](https://sourceforge.net/projects/electricdss/) — EPRI distribution system simulator
+
+## Contact
+
+For questions or feedback, please open an issue on GitHub.

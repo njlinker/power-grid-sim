@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System"
+abstract: >-
+  PowerGridSim is an event-driven power grid simulation platform built on
+  VeraGrid. It enables researchers to model real-world grid disturbances
+  (load changes, generator trips, line faults), automatically generate
+  protection and reconfiguration rules, and visualize grid state evolution
+  through interactive dashboards. The framework integrates probabilistic
+  power flow, reinforcement learning, and topology-aware rule generation
+  for distribution network automation research.
+authors:
+  - family-names: "liu"
+    given-names: "ka"
+    affiliation: ""
+    orcid: ""
+repository-code: "https://github.com/<your-name>/power-grid-sim"
+url: "https://github.com/<your-name>/power-grid-sim"
+license: MIT
+version: "1.0.0"
+date-released: "2026-10-06"
+keywords:
+  - power-systems
+  - simulation
+  - distribution-automation
+  - reinforcement-learning
+  - veragrid
+  - probabilistic-power-flow
+  - rule-engine
+  - dash
+  - plotly
+references:
+  - type: article
+    title: "PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System"
+    authors:
+      - family-names: "liu"
+        given-names: "ka"
+    journal: "Journal of Open Source Software"
+    year: 2026
