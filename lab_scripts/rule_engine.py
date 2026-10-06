@@ -274,7 +274,10 @@ def build_default_rules(v_under: float = 0.93,
 
 
 def build_reconfigure_rule(tie_map: dict[str, str] | None = None,
-                           cooldown: float = 1.0) -> Rule:
+                           cooldown: float = 1.0,
+                           auto_tie_map: bool = True,
+                           fault_isolation: bool = False,
+                           fault_tracker=None) -> Rule:
     """R004_RECONFIGURE：检测失电母线并闭合对应的 tie 开关。
 
     Parameters
@@ -282,6 +285,13 @@ def build_reconfigure_rule(tie_map: dict[str, str] | None = None,
     tie_map : dict
         映射 {失电母线名: 应闭合的 tie 开关名}，例如 {"F1B": "TIE", "F2B": "TIE"}
         若不提供，使用默认映射（F1B↔TIE, F2B↔TIE）
+    auto_tie_map : bool
+        若 True 且 tie_map 未提供，从 grid 拓扑自动构建 tie_map
+    fault_isolation : bool
+        若 True，闭合 tie 前先打开与故障线路相邻的分段开关（防止故障传染）
+    fault_tracker : FaultTracker | None
+        故障追踪器（用于 fault_isolation）。可在 Simulator 外层构造后传入，
+        Simulator.run() 会自动注入事件到 tracker。
     cooldown : float
         重构规则冷却时间（秒）。一般设短一点（如 1s）以便快速恢复
     """
@@ -302,16 +312,34 @@ def build_reconfigure_rule(tie_map: dict[str, str] | None = None,
 
     def then(grid, state):
         actions = []
+
+        # ---- 故障隔离：先打开相邻分段开关（如果启用）
+        if fault_isolation and fault_tracker is not None:
+            faulted = fault_tracker.get_recent_fault(grid)
+            if faulted is not None:
+                # 导入在这里避免循环依赖
+                from topology_analyzer import find_fault_isolation_switch
+                iso_sw = find_fault_isolation_switch(grid, faulted)
+                if iso_sw is not None and iso_sw.active:
+                    iso_sw.active = False
+                    actions.append(f"open {iso_sw.name} (isolate {faulted.name})")
+
+        # ---- 自动构建 tie_map（如果启用）
+        active_tie_map = tie_map
+        if auto_tie_map and not tie_map:
+            from topology_analyzer import build_tie_map
+            active_tie_map = build_tie_map(grid)
+
+        # ---- 闭合 tie 恢复失电母线
         for ld in grid.get_loads():
             if not ld.active:
                 continue
             v = state.get(f"v_{ld.bus.name}")
             if v is None or _is_nan(v) or abs(v) >= 0.05:
                 continue
-            tie_name = tie_map.get(ld.bus.name)
+            tie_name = active_tie_map.get(ld.bus.name)
             if not tie_name:
                 continue
-            # 找 tie 开关（用 Line.active 表示）
             tie = None
             for ln in grid.lines:
                 if ln.name == tie_name:
@@ -321,8 +349,9 @@ def build_reconfigure_rule(tie_map: dict[str, str] | None = None,
                 continue
             tie.active = True
             actions.append(f"close {tie_name} to restore {ld.bus.name}")
+
         if not actions:
-            return "blackout detected but no available tie"
+            return "blackout detected but no action available"
         return "; ".join(actions)
 
     return Rule(
@@ -331,6 +360,38 @@ def build_reconfigure_rule(tie_map: dict[str, str] | None = None,
         when=when, then=then,
         cooldown_s=cooldown,
     )
+
+
+class FaultTracker:
+    """追踪最近发生的线路故障，供 R004 故障隔离使用。
+
+    用法：
+        tracker = FaultTracker(window_s=10.0)
+        # 在 Simulator 注入 line_trip 事件时记录：
+        tracker.record(line_name, t)
+    """
+
+    def __init__(self, window_s: float = 10.0):
+        self.window_s = window_s
+        self.events: list[tuple[float, str]] = []  # (time, line_name)
+
+    def record(self, line_name: str, t: float):
+        self.events.append((t, line_name))
+
+    def get_recent_fault(self, grid) -> object | None:
+        """返回最近 window_s 秒内的故障线路对象。"""
+        if not self.events:
+            return None
+        # 取最近一次故障
+        t, line_name = self.events[-1]
+        for ln in grid.lines:
+            if ln.name == line_name:
+                return ln
+        return None
+
+    def clear_old(self, t: float):
+        """清理超过 window_s 的事件。"""
+        self.events = [(tt, n) for tt, n in self.events if t - tt < self.window_s]
 
 
 def _is_nan(x) -> bool:

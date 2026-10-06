@@ -241,12 +241,14 @@ class Simulator:
     def __init__(self, grid, dt: float = 1.0,
                  solver=vg.SolverType.NR,
                  verbose: bool = False,
-                 profiler=None):
+                 profiler=None,
+                 fault_tracker=None):
         self.grid = grid
         self.dt = float(dt)
         self.opts = vg.PowerFlowOptions(solver_type=solver, verbose=0)
         self.verbose = verbose
         self.profiler = profiler  # LoadProfiler | None
+        self.fault_tracker = fault_tracker  # FaultTracker | None
 
     def run(self, duration: float, schedule: list[Event] | None = None,
             on_event: Optional[Callable[[Event, str], None]] = None,
@@ -298,6 +300,9 @@ class Simulator:
             while next_evt_idx < len(schedule) and schedule[next_evt_idx].t <= t:
                 ev = schedule[next_evt_idx]
                 msg = inject(self.grid, ev)
+                # 记录线路故障给 FaultTracker
+                if self.fault_tracker is not None and ev.kind == "line_trip":
+                    self.fault_tracker.record(ev.target, t)
                 if self.verbose:
                     print(msg)
                 if on_event is not None:
