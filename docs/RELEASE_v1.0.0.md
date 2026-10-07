@@ -66,7 +66,7 @@ This is the first stable release of PowerGridSim, submitted to the
 ### Test Suite
 
 - **64 pytest tests** across 7 test modules
-- All tests pass on Python 3.10 / 3.11 / 3.12
+- All tests pass on Python 3.11 / 3.12
 - Coverage of all core modules
 
 ### Documentation
