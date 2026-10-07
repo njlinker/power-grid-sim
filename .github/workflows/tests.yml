@@ -25,12 +25,30 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y graphviz
+          sudo apt-get install -y \
+            graphviz \
+            build-essential \
+            python3-dev \
+            cmake \
+            libopenblas-dev \
+            libhdf5-dev \
+            libproj-dev \
+            libxml2-dev \
+            libxslt1-dev \
+            libssl-dev \
+            libffi-dev \
+            libfreetype-dev \
+            libpng-dev \
+            libjpeg-dev
 
       - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip setuptools wheel
+          # VeraGrid 6.0.22 ships only an sdist on PyPI for Linux — pip must
+          # build it from source, which transitively builds VeraGridEngine
+          # (highspy, numba, h5py, pyproj, lxml, ...). The system dev packages
+          # above supply the missing C headers.
+          pip install --prefer-binary -r requirements.txt
           pip install pytest pytest-cov
 
       - name: Run tests with coverage
