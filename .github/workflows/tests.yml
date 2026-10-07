@@ -43,12 +43,31 @@ jobs:
 
       - name: Install Python dependencies
         run: |
+          set -o pipefail
           python -m pip install --upgrade pip setuptools wheel
-          # VeraGrid 6.0.22 ships only an sdist on PyPI for Linux — pip must
-          # build it from source, which transitively builds VeraGridEngine
-          # (highspy, numba, h5py, pyproj, lxml, ...). The system dev packages
-          # above supply the missing C headers.
-          pip install --prefer-binary -r requirements.txt
+
+          # VeraGrid 6.0.22 only publishes an sdist on PyPI for Linux, and its
+          # setup.py needs to import VeraGridEngine to read the version. In
+          # the PEP 517 isolated build env VeraGridEngine is not installed
+          # yet, so the metadata step fails with
+          #   ERROR: Failed to build 'VeraGrid' when getting requirements to
+          #   build wheel
+          #
+          # Fix: pre-install VeraGridEngine in the main env (it has no
+          # build-time imports of its own), then install VeraGrid with
+          # --no-build-isolation so the build env can see VeraGridEngine.
+          log=/tmp/pip-install.log
+
+          echo "--- pre-installing VeraGridEngine (no isolation) ---"
+          pip install --no-build-isolation --no-cache-dir \
+            'VeraGridEngine==6.0.22' 2>&1 | tee -a "$log"
+
+          echo "--- installing full requirements (no build isolation) ---"
+          pip install --no-build-isolation --no-cache-dir \
+            -r requirements.txt 2>&1 | tee -a "$log" \
+            || (echo "::error::pip install failed; last 200 lines:"; \
+                tail -n 200 "$log"; exit 1)
+
           pip install pytest pytest-cov
 
       - name: Run tests with coverage
