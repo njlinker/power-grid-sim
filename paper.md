@@ -238,6 +238,25 @@ The author thanks the VeraGrid development team for providing the
 underlying power system solver and the VeraGrid community for API
 support.
 
+# Software Availability
+
+The source code that supports this paper is openly available on GitHub
+at <https://github.com/njlinker/power-grid-sim> and is archived on
+Zenodo with DOI
+[@powergridsim_v1_0_0](https://doi.org/10.5281/zenodo.23232208):
+
+```bibtex
+@software{powergridsim_v1_0_0,
+  author    = {liu, ka},
+  title     = {PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System},
+  version   = {1.0.0},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23232208},
+  url       = {https://doi.org/10.5281/zenodo.23232208}
+}
+```
+
 # References
 
 VeraGrid: <https://github.com/SanPen-Alcon/VeraGrid>

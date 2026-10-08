@@ -133,4 +133,23 @@ MIT License — see `LICENSE` for details.
 
 ## Zenodo DOI
 
-(To be generated via GitHub Release → Zenodo integration)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23232208.svg)](https://doi.org/10.5281/zenodo.23232208)
+
+This release is archived on Zenodo:
+
+- **DOI:** [10.5281/zenodo.23232208](https://doi.org/10.5281/zenodo.23232208)
+- **URL:** https://zenodo.org/records/23232208
+
+Cite this specific version as:
+
+```bibtex
+@software{powergridsim_v1_0_0,
+  author       = {liu, ka},
+  title        = {PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System},
+  version      = {1.0.0},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23232208},
+  url          = {https://doi.org/10.5281/zenodo.23232208}
+}
+```

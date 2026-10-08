@@ -15,11 +15,15 @@ authors:
     given-names: "ka"
     affiliation: ""
     orcid: ""
-repository-code: "https://github.com/<your-name>/power-grid-sim"
-url: "https://github.com/<your-name>/power-grid-sim"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23232208
+    description: "PowerGridSim v1.0.0 release (JOSS submission)"
+repository-code: "https://github.com/njlinker/power-grid-sim"
+url: "https://github.com/njlinker/power-grid-sim"
 license: MIT
 version: "1.0.0"
-date-released: "2026-10-06"
+date-released: "2026-10-08"
 keywords:
   - power-systems
   - simulation
@@ -38,3 +42,4 @@ references:
         given-names: "ka"
     journal: "Journal of Open Source Software"
     year: 2026
+    doi: 10.5281/zenodo.23232208

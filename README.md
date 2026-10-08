@@ -219,7 +219,8 @@ If you use PowerGridSim in research, please cite:
   title = {PowerGridSim: Event-Driven Grid Simulation with Auto-Switching Decision System},
   year = {2026},
   journal = {Journal of Open Source Software},
-  url = {https://github.com/<your-name>/power-grid-sim}
+  url = {https://github.com/njlinker/power-grid-sim},
+  doi = {10.5281/zenodo.23232208}
 }
 ```
 
